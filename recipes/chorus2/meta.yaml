@@ -6,10 +6,10 @@ package:
 
 source:
   url: https://github.com/zhangtaolab/Chorus2/archive/v{{ version }}.tar.gz
-  sha256: 6f24b8ff6c61ff3f94165ca26f1612383d0a73621cab1f1e7249938deca6339b
+  sha256: 2850686d1f6d6b7adb0633a28f228c9d92a6ff7d336abcdf53ce59b0e22d2d5d
 
 build:
-  number: 0
+  number: 1
   noarch: python
   run_exports:
     - {{ pin_subpackage("chorus2", max_pin="x.x") }}
@@ -26,7 +26,7 @@ requirements:
     - pyfasta
     - pybedtools
     - pandas <2
-    - primer3-py >=0.4.2
+    - primer3-py >=1.0.0
     - matplotlib-base >=3
     - pyqt <6  # [py >= 38]
     - pyqt <5.11  # [py < 38]
