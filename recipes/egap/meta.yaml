@@ -72,6 +72,7 @@ requirements:
 test:
   commands:
     - EGAP --help
+    - EGAP_TUI --help
 
 about:
   home: https://github.com/iPsychonaut/EGAP
@@ -92,5 +93,6 @@ extra:
     Please refer to the upstream GitHub page for usage instructions.
   recipe-maintainers:
     - iPsychonaut
+
 
 
