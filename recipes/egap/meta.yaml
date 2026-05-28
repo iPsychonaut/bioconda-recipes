@@ -23,13 +23,20 @@ requirements:
     - pip
   run:
     - python >=3.8,<3.9
-    # tiara 1.0.3 requires numpy<1.20; pandas>=2.0 needs numpy>=1.23.2,
-    # so pandas must stay <2.0 and matplotlib must stay <3.7. Do NOT
-    # loosen these unless tiara is upgraded.
-    - numpy >=1.19.5,<1.20.0
+    # ── tiara constraint chain (assembly decontamination) ───────────────────
+    # tiara 1.0.3 pulls in numba=0.52.x which pulls in llvmlite=0.35.x.
+    # All three need matching py38 builds, which exist on conda-forge
+    # (verified: llvmlite-0.35.0 py38h4630a5e_*, numba-0.52.0 py38h51da96c_0,
+    # numpy-1.19.5 py38h8246c76_3). Pin explicitly so the bioconda CI
+    # solver does not wander into py39 / cuda libarrow paths it cannot
+    # satisfy. Do NOT loosen any of these without first upgrading tiara
+    # to a release that drops the numba=0.52 pin.
+    - numpy ==1.19.5
+    - numba ==0.52.0
+    - llvmlite ==0.35.0
     - pandas >=1.4.4,<2.0
     - matplotlib-base >=3.5.3,<3.7
-    # assemblers / aligners
+    # ── assemblers / aligners ───────────────────────────────────────────────
     - masurca >=4.1.4
     - quast >=5.3.0
     - flye >=2.9.5,<3.0a0
@@ -40,7 +47,7 @@ requirements:
     - minimap2 >=2.30
     - bwa-mem2 >=2.3
     - gfatools >=0.5.5
-    # read QC / preprocessing
+    # ── read QC / preprocessing ─────────────────────────────────────────────
     - trimmomatic >=0.40
     - fastqc >=0.12.1
     - bbmap >=39.81
@@ -48,10 +55,10 @@ requirements:
     - filtlong >=0.3.1
     - sra-tools >=3.2.0
     - kmc >=3.2.4
-    # decontamination (new in v3.4.x)
+    # ── decontamination (new in v3.4.x) ─────────────────────────────────────
     - kraken2 >=2.1.6
-    - tiara =1.0.3
-    # polishing / curation
+    - tiara ==1.0.3
+    # ── polishing / curation ────────────────────────────────────────────────
     - samtools >=1.23.1
     - bamtools >=2.5.3
     - pilon >=1.24
@@ -59,18 +66,18 @@ requirements:
     - ragtag >=2.1.0
     - tgsgapcloser >=1.2.1
     - abyss >=2.3.10
-    # QC / completeness
+    # ── QC / completeness ───────────────────────────────────────────────────
     - compleasm >=0.2.7
     - busco >=5.8.3
-    # error correction / hybrid
+    # ── error correction / hybrid ───────────────────────────────────────────
     - bifrost >=1.3.5
     - ratatosk >=0.9.0
     - sepp >=4.5.1
-    # utilities & compression
+    # ── utilities & compression ─────────────────────────────────────────────
     - pigz >=2.8
     - psutil >=6.0.0
     - ncbi-datasets-cli >=18.22.1
-    # Python libraries
+    # ── Python libraries ────────────────────────────────────────────────────
     - biopython >=1.83
     - beautifulsoup4 >=4.12.3
     - termcolor >=2.4.0
