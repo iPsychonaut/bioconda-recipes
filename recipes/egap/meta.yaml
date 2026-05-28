@@ -1,5 +1,5 @@
 {% set name = "egap" %}
-{% set version = "3.3.9" %}
+{% set version = "3.4.1" %}
 
 package:
   name: {{ name|lower }}
@@ -7,7 +7,7 @@ package:
 
 source:
   - url: https://github.com/iPsychonaut/EGAP/archive/refs/tags/v{{ version }}.tar.gz
-    sha256: 52c5d599c2f628da9c23f5c20abd413fc2bd8a95c2b632eb092efdde39e65b4b
+    sha256: c55568828315dff4dbefe24b619ac4adefd85a9630105d88e9d99516fd10ee7f
   - url: https://github.com/iPsychonaut/runner/archive/refs/tags/v0.0.0.tar.gz
     sha256: 4e67bb1e970dadb86425cb2698e0e2e34f70d78cbf77a32f73c13f66dffb55fc
 
@@ -23,57 +23,72 @@ requirements:
     - pip
   run:
     - python >=3.8,<3.9
-    - pandas >=2.0.3
-    - numpy >=1.24.3
-    - masurca >=4.1.2
-    - quast >=5.2.0
-    - compleasm >=0.2.7
-    - busco >=5.8.2
-    - biopython >=1.81
-    - ragtag >=2.1.0
-    - nanoplot >=1.43.0
-    - termcolor >=2.3.0
-    - minimap2 >=2.28
-    - bwa-mem2 >=2.2.1
-    - samtools >=1.21
-    - bamtools >=2.5.2
-    - tgsgapcloser >=1.2.1
-    - abyss >=2.0.2
-    - sepp >=4.5.1
-    - psutil >=6.0.0
-    - beautifulsoup4 >=4.12.3
-    - ncbi-datasets-cli >=18.3.1
-    - matplotlib-base >=3.7.3
-    - trimmomatic >=0.39
-    - pilon >=1.22
-    - fastqc >=0.12.1
-    - bbmap >=39.15
-    - racon >=1.5.0
-    - kmc >=3.2.4
-    - spades >=4.0.0
-    - purge_dups >=1.2.6
-    - flye >=2.9.5
+    # tiara 1.0.3 requires numpy<1.20; pandas>=2.0 needs numpy>=1.23.2,
+    # so pandas must stay <2.0 and matplotlib must stay <3.7. Do NOT
+    # loosen these unless tiara is upgraded.
+    - numpy >=1.19.5,<1.20.0
+    - pandas >=1.4.4,<2.0
+    - matplotlib-base >=3.5.3,<3.7
+    # assemblers / aligners
+    - masurca >=4.1.4
+    - quast >=5.3.0
+    - flye >=2.9.5,<3.0a0
+    - spades >=4.2.0
+    - hifiasm >=0.25.0
     - pbccs >=6.4.0
-    - hifiasm >=0.21.0
-    - gfatools >=0.5
+    - racon >=1.5.0
+    - minimap2 >=2.30
+    - bwa-mem2 >=2.3
+    - gfatools >=0.5.5
+    # read QC / preprocessing
+    - trimmomatic >=0.40
+    - fastqc >=0.12.1
+    - bbmap >=39.81
+    - nanoplot >=1.46.2
+    - filtlong >=0.3.1
+    - sra-tools >=3.2.0
+    - kmc >=3.2.4
+    # decontamination (new in v3.4.x)
+    - kraken2 >=2.1.6
+    - tiara =1.0.3
+    # polishing / curation
+    - samtools >=1.23.1
+    - bamtools >=2.5.3
+    - pilon >=1.24
+    - purge_dups >=1.2.6
+    - ragtag >=2.1.0
+    - tgsgapcloser >=1.2.1
+    - abyss >=2.3.10
+    # QC / completeness
+    - compleasm >=0.2.7
+    - busco >=5.8.3
+    # error correction / hybrid
     - bifrost >=1.3.5
     - ratatosk >=0.9.0
-    - sra-tools >=3.2.0
-    - filtlong >=0.2.1
-    - pyinaturalist >=0.20
+    - sepp >=4.5.1
+    # utilities & compression
+    - pigz >=2.8
+    - psutil >=6.0.0
+    - ncbi-datasets-cli >=18.22.1
+    # Python libraries
+    - biopython >=1.83
+    - beautifulsoup4 >=4.12.3
+    - termcolor >=2.4.0
     - jinja2 >=3.1.4
     - geopy >=2.4.1
     - tabulate >=0.9.0
     - openpyxl >=3.1.5
     - requests >=2.32.3
-    - rich >=13.3.3
-    - textual >=0.4.2
-  
+    - pyinaturalist >=0.21.1
+    - rich >=13.9.4
+    - textual >=0.89.1
+
 test:
   requires:
     - python
   commands:
     - EGAP --help
+    - EGAP_TUI --help
 
 about:
   home: https://github.com/iPsychonaut/EGAP
@@ -86,13 +101,14 @@ about:
     PacBio data. It supports multiple input modes and assembly methods and
     determines the best based on multiple metrics: BUSCO Completeness
     (Single + Duplicated), Assembly Contig Count, Assembly N50, Assembly L50,
-    and Assembly GC-content.
+    and Assembly GC-content. v3.4.x adds Kraken2 read decontamination and
+    Tiara assembly decontamination.
 
 extra:
   notes: |
-    This package installs a custom executable named "EGAP" in $PREFIX/bin.
-    Please refer to the upstream GitHub page for usage instructions.
+    This package installs the EGAP command in $PREFIX/bin along with the
+    EGAP_TUI command for the interactive Textual interface. The TUI can
+    also be reached via `EGAP --tui`. Please refer to the upstream GitHub
+    page for usage instructions.
   recipe-maintainers:
     - iPsychonaut
-
-
