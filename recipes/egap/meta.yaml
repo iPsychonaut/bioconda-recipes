@@ -19,93 +19,63 @@ build:
 
 requirements:
   host:
-    - python >=3.9,<3.10
+    - python >=3.8,<3.9
     - pip
   run:
-    # Python is pinned to 3.9 because of a constraint chain that has no
-    # solution on newer Python versions in the current bioconda graph:
-    #   compleasm -> sepp -> dendropy
-    # compleasm requires dendropy <4.6.0. The only sepp that is compatible
-    # with that dendropy AND has builds for a non-EOL Python is sepp 4.4.0,
-    # which only builds for py3.9. Newer sepp (4.5.4 / 4.5.5 / 4.5.6) all
-    # require dendropy >=5.0 (or pull in pasta, which itself needs
-    # dendropy >=5.0 on modern Python), which breaks compleasm.
-    # Revisit on next EGAP release: if upstream sepp drops its pasta
-    # dep or compleasm relaxes its dendropy cap, bump Python here.
-    - python >=3.9,<3.10
-    - numpy
-    - pandas
-    # assemblers / aligners
-    - masurca >=4.1.4
-    - quast >=5.3.0
-    - flye >=2.9.5,<3.0a0
-    - spades >=4.2.0
-    - hifiasm >=0.25.0
-    - pbccs >=6.4.0
-    - racon >=1.5.0
-    - minimap2 >=2.30
-    - bwa-mem2 >=2.3
-    - gfatools >=0.5.5
-    # read QC / preprocessing
-    - trimmomatic >=0.40
-    - fastqc >=0.12.1
-    - bbmap >=39.81
-    - nanoplot >=1.46.2
-    - filtlong >=0.3.1
-    - sra-tools >=3.2.0
-    - kmc >=3.2.4
-    # decontamination
-    # Tiara is intentionally NOT listed here. Tiara 1.0.3 hard-pins
-    # numba=0.52 / numpy<1.20, which is incompatible with the modern
-    # bioconda toolchain. A modernised fork (`tiara-entheome`) is being
-    # prepared at https://github.com/iPsychonaut/tiara-entheome and will
-    # be added in a follow-up EGAP release. Until then, EGAP's
-    # decontaminate_assembly stage skips gracefully when tiara is not
-    # on PATH.
-    - kraken2 >=2.1.6
-    # polishing / curation
-    - samtools >=1.23.1
-    - bamtools >=2.5.3
-    - pilon >=1.24
-    - purge_dups >=1.2.6
-    - ragtag >=2.1.0
-    - tgsgapcloser >=1.2.1
-    - abyss >=2.3.10
-    # QC / completeness
-    # Both compleasm (default) and busco (fallback) are bundled. Sepp is
-    # NOT pinned explicitly because compleasm and busco both pull it
-    # transitively, and an explicit floor here would over-constrain the
-    # solver (sepp 4.4.0 is the only version that fits the dendropy<4.6
-    # / py3.9 window above).
+    - python >=3.8,<3.9
+    - pandas >=2.0.3
+    - numpy >=1.24.3
+    - masurca >=4.1.2
+    - quast >=5.2.0
     - compleasm >=0.2.7
-    - busco >=5.8.3
-    # error correction / hybrid
+    - busco >=5.8.2
+    - biopython >=1.81
+    - ragtag >=2.1.0
+    - nanoplot >=1.43.0
+    - termcolor >=2.3.0
+    - minimap2 >=2.28
+    - bwa-mem2 >=2.2.1
+    - samtools >=1.21
+    - bamtools >=2.5.2
+    - tgsgapcloser >=1.2.1
+    - abyss >=2.0.2
+    - sepp >=4.5.1
+    - psutil >=6.0.0
+    - beautifulsoup4 >=4.12.3
+    - ncbi-datasets-cli >=18.3.1
+    - matplotlib-base >=3.7.3
+    - trimmomatic >=0.39
+    - pilon >=1.22
+    - fastqc >=0.12.1
+    - bbmap >=39.15
+    - racon >=1.5.0
+    - kmc >=3.2.4
+    - spades >=4.0.0
+    - purge_dups >=1.2.6
+    - flye >=2.9.5
+    - pbccs >=6.4.0
+    - hifiasm >=0.21.0
+    - gfatools >=0.5
     - bifrost >=1.3.5
     - ratatosk >=0.9.0
-    # utilities & compression
-    - pigz >=2.8
-    - psutil >=6.0.0
-    - ncbi-datasets-cli >=18.22.1
-    # Python libraries
-    - biopython >=1.83
-    - beautifulsoup4 >=4.12.3
-    - matplotlib-base >=3.7
-    - termcolor >=2.4.0
+    - sra-tools >=3.2.0
+    - filtlong >=0.2.1
+    - pyinaturalist >=0.20
     - jinja2 >=3.1.4
     - geopy >=2.4.1
     - tabulate >=0.9.0
     - openpyxl >=3.1.5
     - requests >=2.32.3
-    - pyinaturalist >=0.21.1
-    - rich >=13.9.4
-    - textual >=0.89.1
+    - rich >=13.3.3
+    - textual >=0.4.2
+    - kraken2 >=2.1.6
+    - pigz >=2.8
 
 test:
   requires:
     - python
   commands:
     - EGAP --help
-    - EGAP_TUI --help
 
 about:
   home: https://github.com/iPsychonaut/EGAP
@@ -119,14 +89,10 @@ about:
     determines the best based on multiple metrics: BUSCO Completeness
     (Single + Duplicated), Assembly Contig Count, Assembly N50, Assembly L50,
     and Assembly GC-content. v3.4.x adds Kraken2 read decontamination.
-    Assembly-level decontamination via Tiara will be wired in via the
-    tiara-entheome fork in a future release.
 
 extra:
   notes: |
-    This package installs the EGAP command in $PREFIX/bin along with the
-    EGAP_TUI command for the interactive Textual interface. The TUI can
-    also be reached via `EGAP --tui`. Please refer to the upstream GitHub
-    page for usage instructions.
+    This package installs the EGAP and EGAP_TUI commands in $PREFIX/bin.
+    Please refer to the upstream GitHub page for usage instructions.
   recipe-maintainers:
     - iPsychonaut
